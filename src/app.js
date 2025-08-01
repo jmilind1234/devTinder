@@ -18,6 +18,7 @@ app.post("/signup", async (req, res, next) => {
         res.send(response);
     } catch (error) {
         console.log("Error while saving user in the collection ", error);
+        res.status(400).send("Error saving the user", error.message);
     }
 
     
