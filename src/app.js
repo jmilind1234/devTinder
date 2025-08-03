@@ -56,7 +56,7 @@ app.delete("/user", async(req, res, next)=>{
 app.patch("/user/email", async(req, res, next)=>{
     try {
         const {emailId, ...data} = req.body;
-        const response = await UserModel.findOneAndUpdate({emailId},{...data});
+        const response = await UserModel.findOneAndUpdate({emailId},{...data},{runValidators: true});
         res.send(response);
 
     } catch (error) {
@@ -69,7 +69,7 @@ app.patch("/user/email", async(req, res, next)=>{
 app.patch("/user", async(req, res, next)=>{
     try {
         const {userId, ...data} = req.body;
-        const response = await UserModel.findByIdAndUpdate(userId, data);
+        const response = await UserModel.findByIdAndUpdate(userId, data, {runValidators: true});
         res.send("User was updated successfully");
     } catch (error) {
         res.status(500).send(`Problem while updating the user - ${error.message}`);
