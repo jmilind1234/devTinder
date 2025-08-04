@@ -1,6 +1,6 @@
 const express = require("express");
 const {connectToCluster} = require("./config/database");
-
+const {validateSignUpData} = require("./utils/validate");
 const UserModel = require("./Models/userModel");
 const app = express();
 
@@ -9,11 +9,12 @@ app.use(express.json());
 //Adding new user
 app.post("/signup", async (req, res, next) => {
     try {
+        validateSignUpData(req.body);
         const response = await UserModel.create({...req.body});
         res.send(response);
     } catch (error) {
         console.log("Error while saving user in the collection ", error);
-        res.status(400).send("Error saving the user", error.message);
+        res.status(400).send("Error saving the user " +  error.message);
     }
 });
 
@@ -69,8 +70,8 @@ app.patch("/user/email", async(req, res, next)=>{
 app.patch("/user", async(req, res, next)=>{
     try {
         const {userId, ...data} = req.body;
-        const response = await UserModel.findByIdAndUpdate(userId, data, {runValidators: true});
-        res.send("User was updated successfully");
+        const response = await UserModel.findByIdAndUpdate(userId, data, {runValidators: true, returnDocument: 'after'});
+        res.send("User was updated successfully" + response);
     } catch (error) {
         res.status(500).send(`Problem while updating the user - ${error.message}`);
     }

@@ -16,18 +16,19 @@ const userSchema = new Schema({
         lowercase : true
     },
     emailId: {
-        type:String,
+        type: String,
         trim: true,
-        required: true,
         unique: true,
+        required: true,
         lowercase: true,
+        immutable: true,
     },
     password: {
         type:String,
         trim: true,
         required: true
     },
-    age: {type: Number, min: 12},
+    age: {type: Number, min: 12,required: true},
     gender: {
         type: String,
         enum: ['male',' female', 'other'],
