@@ -24,6 +24,7 @@ app.get("/user", async(req, res, next)=>{
         const emailId = req.body.emailId;
         const user = await UserModel.find({emailId});
         console.log("user with required email id is ", user);
+
         res.send(user[0]);
     } catch (error) {
         console.log("error ", error);
@@ -56,6 +57,8 @@ app.delete("/user", async(req, res, next)=>{
 //updating the user data based on email address provided
 app.patch("/user/email", async(req, res, next)=>{
     try {
+        //need to add validation here as well
+        validateUpdateViaEmail(req.body);
         const {emailId, ...data} = req.body;
         const response = await UserModel.findOneAndUpdate({emailId},{...data},{runValidators: true});
         res.send(response);

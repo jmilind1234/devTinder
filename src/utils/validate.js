@@ -24,9 +24,34 @@ function validateSignUpData(body){
     if(body.photoUrl && (!validator.isURL(body.photoUrl))){
         throw new Error("Photo URL must be proper URL.");
     }
-    if(body.skills && (!Array.isArray(skills))){
+    if(body.skills && (!Array.isArray(body.skills))){
         throw new Error("Skills are in wrong format");
     }
 }
 
-module.exports = {validateSignUpData}
+function validateUpdateViaEmail(body){
+    //only skills and photourl can be updated
+    const ALLOWED_KEYS = ['emailId', 'photoUrl', 'skills'];
+    const isCorrect = Object.keys(body).every(key => ALLOWED_KEYS.includes(key));
+
+    if(!isCorrect){
+        throw new Error('Only photo url and/or skills can be updated');
+    }
+    if(!body.emailId){
+        throw new Error('Email ID is must for updating data.')
+    }
+
+    if(body.emailId && (!validator.isEmail(body.emailId))){
+        throw new Error("Email ID is not valid, please enter valid email id");
+    }
+    
+    if(body.photoUrl && (!validator.isURL(body.photoUrl))){
+        throw new Error("Photo URL must be proper URL.");
+    }
+
+    if(body.skills && (!Array.isArray(body.skills))){
+        throw new Error("Skills are in wrong format");
+    }
+
+}
+module.exports = {validateSignUpData, validateUpdateViaEmail}
