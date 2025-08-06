@@ -1,11 +1,34 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const {connectToCluster} = require("./config/database");
-const {validateSignUpData} = require("./utils/validate");
+const {validateSignUpData, validateUpdateViaEmail, validateLoginData} = require("./utils/validate");
 const UserModel = require("./Models/userModel");
 const app = express();
 
 app.use(express.json());
+
+//API for login user
+app.post('/login', async (req, res, next)=>{
+    try {
+        validateLoginData(req.body);
+        //find the user with email id 
+        let user = await UserModel.find({emailId : req.body.emailId});
+        console.log("user found were ", user );
+        if(user.length === 0){
+            res.status(404).send("Invalid Credentials!!! Try again");
+        }else{
+            const isPasswordCorrect = await bcrypt.compare(req.body.password, user[0].password);
+            if(isPasswordCorrect){
+                res.send("Login successfull!!!");
+            }else{      
+                res.status(404).send("Invalid Credentials!!! Try again");
+            }
+        }
+        
+    } catch (error) {
+        res.status(500).send("Problem while logging in a user "+ error.message);
+    }
+})
 
 //Adding new user
 app.post("/signup", async (req, res, next) => {

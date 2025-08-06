@@ -1,5 +1,22 @@
 var validator = require('validator');
 
+function validateLoginData(body){
+    const ALLOWED_KEYS = ['emailId', 'password'];
+    const isCorrect = Object.keys(body).every(key => ALLOWED_KEYS.includes(key));
+    if(!isCorrect){
+        throw new Error("Bad Request");
+    }
+    if(!body?.emailId){
+        throw new Error("Email Id missing");
+    }
+    if(!body?.password){
+        throw new Error("Password is missing");
+    }
+    if(body.emailId && (!validator.isEmail(body.emailId))){
+        throw new Error("Email ID is not valid, please enter valid email id");
+    }
+}
+
 function validateSignUpData(body){
     const ALLOWED_KEYS = ['firstName', 'lastName', 'emailId', 'password', 'age' , 'gender', 'photoUrl', 'about' , 'skills'];
     const isCorrect = Object.keys(body).every(key => ALLOWED_KEYS.includes(key));
@@ -54,4 +71,4 @@ function validateUpdateViaEmail(body){
     }
 
 }
-module.exports = {validateSignUpData, validateUpdateViaEmail}
+module.exports = {validateSignUpData, validateUpdateViaEmail, validateLoginData}
