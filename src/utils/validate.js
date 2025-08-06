@@ -4,16 +4,16 @@ function validateLoginData(body){
     const ALLOWED_KEYS = ['emailId', 'password'];
     const isCorrect = Object.keys(body).every(key => ALLOWED_KEYS.includes(key));
     if(!isCorrect){
-        throw new Error("Bad Request");
+        throw new BadRequestError("Bad Request");
     }
     if(!body?.emailId){
-        throw new Error("Email Id missing");
+        throw new BadRequestError("Email Id missing");
     }
     if(!body?.password){
-        throw new Error("Password is missing");
+        throw new BadRequestError("Password is missing");
     }
     if(body.emailId && (!validator.isEmail(body.emailId))){
-        throw new Error("Email ID is not valid, please enter valid email id");
+        throw new BadRequestError("Email ID is not valid, please enter valid email id");
     }
 }
 
@@ -21,28 +21,28 @@ function validateSignUpData(body){
     const ALLOWED_KEYS = ['firstName', 'lastName', 'emailId', 'password', 'age' , 'gender', 'photoUrl', 'about' , 'skills'];
     const isCorrect = Object.keys(body).every(key => ALLOWED_KEYS.includes(key));
     if(!isCorrect){
-        throw new Error("Unwanted field(or fields) present");
+        throw new BadRequestError("Unwanted field(or fields) present");
     }
     if(body.firstName && !(/^[A-Za-z]+$/.test(body.firstName))){
-        throw new Error("First name is not valid i.e. it contains invalid characters");
+        throw new BadRequestError("First name is not valid i.e. it contains invalid characters");
     }
     if(body.lastName && !(/^[A-Za-z]+$/.test(body.lastName))){
-        throw new Error("Last name is not valid i.e. it contains invalid characters");
+        throw new BadRequestError("Last name is not valid i.e. it contains invalid characters");
     }
     if(body.emailId && (!validator.isEmail(body.emailId))){
-        throw new Error("Email ID is not valid, please enter valid email id");
+        throw new BadRequestError("Email ID is not valid, please enter valid email id");
     }
     if(body.password && (!validator.isStrongPassword(body.password))){
-        throw new Error("Password is not strong enough");
+        throw new BadRequestError("Password is not strong enough");
     }
     if(body.age && typeof body.age !== "number"){
-        throw new Error("Age must be a valid number");
+        throw new BadRequestError("Age must be a valid number");
     }
     if(body.photoUrl && (!validator.isURL(body.photoUrl))){
-        throw new Error("Photo URL must be proper URL.");
+        throw new BadRequestError("Photo URL must be proper URL.");
     }
     if(body.skills && (!Array.isArray(body.skills))){
-        throw new Error("Skills are in wrong format");
+        throw new BadRequestError("Skills are in wrong format");
     }
 }
 
@@ -52,22 +52,22 @@ function validateUpdateViaEmail(body){
     const isCorrect = Object.keys(body).every(key => ALLOWED_KEYS.includes(key));
 
     if(!isCorrect){
-        throw new Error('Only photo url and/or skills can be updated');
+        throw new BadRequestError('Only photo url and/or skills can be updated');
     }
     if(!body.emailId){
-        throw new Error('Email ID is must for updating data.')
+        throw new BadRequestError('Email ID is must for updating data.')
     }
 
     if(body.emailId && (!validator.isEmail(body.emailId))){
-        throw new Error("Email ID is not valid, please enter valid email id");
+        throw new BadRequestError("Email ID is not valid, please enter valid email id");
     }
     
     if(body.photoUrl && (!validator.isURL(body.photoUrl))){
-        throw new Error("Photo URL must be proper URL.");
+        throw new BadRequestError("Photo URL must be proper URL.");
     }
 
     if(body.skills && (!Array.isArray(body.skills))){
-        throw new Error("Skills are in wrong format");
+        throw new BadRequestError("Skills are in wrong format");
     }
 
 }
