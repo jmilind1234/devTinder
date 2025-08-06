@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
 const {connectToCluster} = require("./config/database");
 const {validateSignUpData} = require("./utils/validate");
 const UserModel = require("./Models/userModel");
@@ -10,7 +11,9 @@ app.use(express.json());
 app.post("/signup", async (req, res, next) => {
     try {
         validateSignUpData(req.body);
-        const response = await UserModel.create({...req.body});
+        const {password} = req.body;
+        const encryptedPassword = await bcrypt.hash(password, 10);
+        const response = await UserModel.create({...req.body, password: encryptedPassword});
         res.send(response);
     } catch (error) {
         console.log("Error while saving user in the collection ", error);
