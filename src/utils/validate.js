@@ -1,4 +1,5 @@
-var validator = require('validator');
+const validator = require('validator');
+const BadRequestError = require('./BadRequestError');
 
 function validateLoginData(body){
     const ALLOWED_KEYS = ['emailId', 'password'];

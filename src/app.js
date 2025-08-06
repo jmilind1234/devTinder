@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const {connectToCluster} = require("./config/database");
+const BadRequestError = require('./utils/BadRequestError');
 const {validateSignUpData, validateUpdateViaEmail, validateLoginData} = require("./utils/validate");
 const UserModel = require("./Models/userModel");
 const app = express();
@@ -26,6 +27,9 @@ app.post('/login', async (req, res, next)=>{
         }
         
     } catch (error) {
+        if(error instanceof BadRequestError){
+            res.status(400).send({Message: error.message});
+        }
         res.status(500).send("Problem while logging in a user "+ error.message);
     }
 })
@@ -39,8 +43,10 @@ app.post("/signup", async (req, res, next) => {
         const response = await UserModel.create({...req.body, password: encryptedPassword});
         res.send(response);
     } catch (error) {
-        console.log("Error while saving user in the collection ", error);
-        res.status(400).send("Error saving the user " +  error.message);
+        if(error instanceof BadRequestError){
+            res.status(400).send({Message: error.message});
+        }
+        res.status(500).send("Error saving the user " +  error.message);
     }
 });
 

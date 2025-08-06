@@ -4,3 +4,5 @@ class BadRequestError extends Error {
         this.name = "BadRequestError";
     }
 }
+
+module.exports = BadRequestError;
