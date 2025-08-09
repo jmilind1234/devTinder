@@ -6,6 +6,7 @@ const {validateSignUpData, validateUpdateViaEmail, validateLoginData} = require(
 const UserModel = require("./Models/userModel");
 const app = express();
 const cookieParser = require("cookie-parser");
+const jwt = require('jsonwebtoken');
 
 app.use(express.json());
 app.use(cookieParser());
@@ -22,7 +23,8 @@ app.post('/login', async (req, res, next)=>{
         }else{
             const isPasswordCorrect = await bcrypt.compare(req.body.password, user[0].password);
             if(isPasswordCorrect){
-                res.cookie("token", "dummy token");
+                const jwtToken = jwt.sign({userId : user[0]._id}, "DevTinder");
+                res.cookie("token", jwtToken);
                 res.send("Login successfull!!!");
             }else{       
                 res.status(404).send("Invalid Credentials!!! Try again");
@@ -38,9 +40,11 @@ app.post('/login', async (req, res, next)=>{
 })
 
 //API to get profile of the user
-app.get("/profile", (req, res, next)=>{
+app.get("/profile", async(req, res, next)=>{
     try {
-        console.log("cookies coming are ", req.cookies);
+        const decoded = jwt.verify(req.cookies.token, "DevTinder");
+        const userData = await UserModel.findById(decoded?.userId);
+        res.send(userData);
     } catch (error) {
         res.send(500).send("Can't get profile of the user. Please login again!!!");
     }
