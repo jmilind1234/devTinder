@@ -5,8 +5,10 @@ const BadRequestError = require('./utils/BadRequestError');
 const {validateSignUpData, validateUpdateViaEmail, validateLoginData} = require("./utils/validate");
 const UserModel = require("./Models/userModel");
 const app = express();
+const cookieParser = require("cookie-parser");
 
 app.use(express.json());
+app.use(cookieParser());
 
 //API for login user
 app.post('/login', async (req, res, next)=>{
@@ -20,8 +22,9 @@ app.post('/login', async (req, res, next)=>{
         }else{
             const isPasswordCorrect = await bcrypt.compare(req.body.password, user[0].password);
             if(isPasswordCorrect){
+                res.cookie("token", "dummy token");
                 res.send("Login successfull!!!");
-            }else{      
+            }else{       
                 res.status(404).send("Invalid Credentials!!! Try again");
             }
         }
@@ -31,6 +34,15 @@ app.post('/login', async (req, res, next)=>{
             res.status(400).send({Message: error.message});
         }
         res.status(500).send("Problem while logging in a user "+ error.message);
+    }
+})
+
+//API to get profile of the user
+app.get("/profile", (req, res, next)=>{
+    try {
+        console.log("cookies coming are ", req.cookies);
+    } catch (error) {
+        res.send(500).send("Can't get profile of the user. Please login again!!!");
     }
 })
 
