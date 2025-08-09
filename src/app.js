@@ -42,12 +42,7 @@ app.post('/login', async (req, res, next)=>{
 //API to get profile of the user
 app.get("/profile", userAuth, async(req, res, next)=>{
     try {
-        const decoded = jwt.verify(req.cookies.token, "DevTinder");
-        const userData = await UserModel.findById(decoded?.userId);
-        if(!userData){
-            res.status(404).send("User not found!!!");
-        }
-        res.send(userData);
+        res.send(req.user);
     } catch (error) {
         res.send(500).send("Can't get profile of the user. Please login again!!!");
     }
