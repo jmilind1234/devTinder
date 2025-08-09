@@ -7,7 +7,7 @@ const UserModel = require("./Models/userModel");
 const app = express();
 const cookieParser = require("cookie-parser");
 const jwt = require('jsonwebtoken');
-
+const {userAuth} = require("../src/middlewares/authMiddlewares");
 app.use(express.json());
 app.use(cookieParser());
 
@@ -40,7 +40,7 @@ app.post('/login', async (req, res, next)=>{
 })
 
 //API to get profile of the user
-app.get("/profile", async(req, res, next)=>{
+app.get("/profile", userAuth, async(req, res, next)=>{
     try {
         const decoded = jwt.verify(req.cookies.token, "DevTinder");
         const userData = await UserModel.findById(decoded?.userId);
