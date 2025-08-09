@@ -11,7 +11,9 @@ const userAuth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    res.status(500).send(error.message);
+    if(error.name === "TokenExpiredError"){
+        res.status(401).send(error.message);
+    }
   }
 };
 

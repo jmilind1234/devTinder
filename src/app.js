@@ -23,7 +23,7 @@ app.post('/login', async (req, res, next)=>{
         }else{
             const isPasswordCorrect = await bcrypt.compare(req.body.password, user[0].password);
             if(isPasswordCorrect){
-                const jwtToken = jwt.sign({userId : user[0]._id}, "DevTinder");
+                const jwtToken = jwt.sign({userId : user[0]._id}, "DevTinder", {expiresIn : "1d"});
                 res.cookie("token", jwtToken);
                 res.send("Login successfull!!!");
             }else{       
